@@ -10,7 +10,7 @@ I love music and deep learning. Let's combine both.
 - [ ] Support Ties
 - [ ] Use attention
 - [ ] Perform quantization
-- [ ] Look for more advanced network architectures
+- [ ] Look for more advanced network architectures (RNN's, GAN's...)
 
 
 ## Encoding details
