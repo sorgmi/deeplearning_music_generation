@@ -17,7 +17,7 @@ I love music and deep learning. Let's combine both.
 Encoding is inspired by [Bachbot](https://github.com/feynmanliang/bachbot). Image is from [here](https://www.microsoft.com/en-us/research/wp-content/uploads/2017/11/156_Paper.pdf): 
 ![Encoding from Bachbot](images/bachbot_encoding.PNG)
 
-All 128 MIDI-Notes are supported. Additionally we use 3 unique symbols: start, stop, EOF (end of frame), Tied. Therefore notes are encoded in a 131-dimensional vector.
+All 128 MIDI-Notes are supported. Additionally we use 3 unique symbols: start, stop, ~~EOF (end of frame)~~, Tied. Therefore notes are encoded in a 131-dimensional vector.
 
 * Alle notes should be quantised to a minimum pre-defined length (shortest supported note)
 * network gets an 3 dimensional vector as input. The shape is (batchsize, timesteps, 132). The 132 elements of the vector are binary (0 or 1). Since a chord contains multiple notes in one timestep it's not a one-hot encoding

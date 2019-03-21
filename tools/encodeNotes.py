@@ -47,15 +47,12 @@ def encode(notes, delta):
 
         :param notes: List of notes (single Part of a piece)
         :param delta: smallest note (quantization)
-        :return: 2d array with shape (131, timesteps)
+        :return: 2d array with shape (timesteps, 132)
         '''
-    # todo: gebundene noten i, input
 
     quantization(notes, delta)
-
     vectorSize = getTotalTokens()
 
-    # todo: measure timesteps in delta units?
     totalTimesteps = 0
     for x in notes:
         if type(x) == music21.note.Note:
@@ -64,10 +61,13 @@ def encode(notes, delta):
             totalTimesteps += 1
         elif x is 'stop':
             totalTimesteps += 1
-    totalTimesteps = int(totalTimesteps) #todo: aufrunden?
+        elif type(x) == music21.chord.Chord:
+            raise NotImplementedError
+        else:
+            raise NotImplementedError
 
-    # Todo: use EOF symbol
-    #totalTimesteps += len(notes)  # Start & End Symbol + n*EndOFrame symbol
+    totalTimesteps = int(totalTimesteps)
+    totalTimesteps += len(notes)  # n*EndOFrame symbol
     x = np.zeros( (totalTimesteps, vectorSize) )
 
     currentTimestep = 0
@@ -85,9 +85,10 @@ def encode(notes, delta):
             end = currentTimestep + stepsOn
 
             x[currentTimestep:end, getNoteIndex(n)] = 1
+            x[currentTimestep+1:end, getTiedIndex()] = 1  # Notes are tied
             currentTimestep = end
-            # Todo: activate EOF symbol
-            # x[getEOFIndex(), currentTimestep] = 1 # EndOfFrame symbol
+            x[currentTimestep, getEOFIndex()] = 1  # EndOfFrame symbol
+            currentTimestep += 1
 
         elif n.isChord:
             raise NotImplementedError  # no chords at the moment
@@ -98,14 +99,14 @@ def encode(notes, delta):
 
 def quantization(notes, delta):
     for n in notes:
-        if n.quarterLength < delta:
+        if type(n) == music21.note.Note and n.quarterLength < delta:
             n.quarterLength = delta
             print("quantization used")
 
 
 def decodeSequence(seq, input=None):
-    #todo: delta & länge beachten
-    #todo: gebunden
+    # todo: delta & länge beachten
+    # todo: use tied
     notes = []
     for i in range(0, len(seq)):
         if seq[i] < 129:
@@ -129,11 +130,10 @@ def decodeSequence(seq, input=None):
 
 
 def getTotalTokens():
-    return 131  # 128 midi notes + Start + Stop + EndOfFrame
+    return 132  # 128 midi notes + Start + Stop + EndOfFrame Tied
 
 
 def getNoteIndex(n):
-    # todo: tied?
     return n.pitch.midi
 
 def getStartIndex():
@@ -144,4 +144,7 @@ def getStopIndex():
 
 def getEOFIndex():
     return 130
+
+def getTiedIndex():
+    return 131
 
