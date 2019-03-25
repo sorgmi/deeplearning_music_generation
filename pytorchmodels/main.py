@@ -50,14 +50,14 @@ def trainSingleExample(input_tensor, target_tensor, encoder, decoder, encoder_op
         # Teacher forcing: Feed the target as the next input
         for di in range(target_length):
             decoder_output, decoder_hidden = decoder(decoder_input, decoder_hidden)
-            #print("crit:",decoder_output.shape, target_tensor[0,di,:].shape)
-            #TODO: Use multiclass loss (Tied) ???
+            #TODO: Use multi-label loss (Tied) ???
             #todo: https://pytorch.org/docs/stable/nn.html#bceloss (or #bcewithlogitsloss)
             t = target_tensor[di,:]
             t = torch.argmax(t, dim=None)
             t = torch.Tensor([t])
             loss += criterion(decoder_output, t.long())
             decoder_input = target_tensor[di,:]  # todo: is offset correct?
+            #print(torch.argmax(decoder_input))
 
     else:
         raise NotImplementedError
@@ -98,7 +98,7 @@ hidden_size = 256
 encoder1 = EncoderRNN(getTotalTokens(), hidden_size).to(device)
 decoder1 = DecoderRNN(hidden_size, getTotalTokens()).to(device)
 
-train(encoder1, decoder1, epochs=10)
+train(encoder1, decoder1, epochs=100)
 
-#torch.save(encoder1, "encoder.pt")
-#torch.save(decoder1, "decoder.pt")
+torch.save(encoder1, "encoder.pt")
+torch.save(decoder1, "decoder.pt")

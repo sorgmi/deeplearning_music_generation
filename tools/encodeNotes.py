@@ -26,14 +26,14 @@ def noteListToInt(notes):
     return [x.pitch.midi for x in notes]
 
 
-def generateInput(notes, split=0.5, delta=0.25, useEOF=False):
+def generateInput(notes, split=0.5, delta=0.25, useEOF=False, useTied=False):
     splitIndex = int(len(notes)*split)
     #splitIndex = len(notes) - 1
     input = notes[:splitIndex]
     target = ['start'] + notes[splitIndex:] + ['stop']
 
-    encoderInput = encode(input, delta, useEOF)
-    decoderInput = encode(target, delta, useEOF)
+    encoderInput = encode(input, delta, useEOF, useTied)
+    decoderInput = encode(target, delta, useEOF, useTied)
 
     # decoder_target_data will be ahead by one timestep and will not include the start character.
     decoderTarget = np.roll(decoderInput, -1, axis=0)
@@ -42,7 +42,7 @@ def generateInput(notes, split=0.5, delta=0.25, useEOF=False):
 
     return encoderInput, decoderInput, decoderTarget
 
-def encode(notes, delta, useEOF=False):
+def encode(notes, delta, useEOF, useTied):
     '''
 
         :param notes: List of notes (single Part of a piece)
@@ -86,7 +86,8 @@ def encode(notes, delta, useEOF=False):
             end = currentTimestep + stepsOn
 
             x[currentTimestep:end, getNoteIndex(n)] = 1
-            x[currentTimestep+1:end, getTiedIndex()] = 1  # Notes are tied
+            if useTied == True:
+                x[currentTimestep+1:end, getTiedIndex()] = 1  # Notes are tied
             currentTimestep = end
             if useEOF == True:
                 x[currentTimestep, getEOFIndex()] = 1  # EndOfFrame symbol
