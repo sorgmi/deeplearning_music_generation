@@ -8,6 +8,7 @@ I love music and deep learning. Let's combine both.
 
 **Todo**
 - [ ] Support Ties
+- [ ] Support chords
 - [ ] Use attention
 - [x] ~~Perform quantization~~
 - [ ] Look for more advanced network architectures (RNN's, GAN's...)

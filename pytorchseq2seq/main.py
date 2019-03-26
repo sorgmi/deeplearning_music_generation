@@ -47,28 +47,14 @@ def trainSingleExample(input_tensor, target_tensor, encoder, decoder, encoder_op
 
     use_teacher_forcing = True
 
-
-
     if use_teacher_forcing:
         # Teacher forcing: Feed the target as the next input
         for di in range(target_length):
             decoder_output, decoder_hidden = decoder(decoder_input, decoder_hidden)
-            #TODO: Use multi-label loss (Tied) ???
-            #todo: https://pytorch.org/docs/stable/nn.html#bceloss (or #bcewithlogitsloss)
-            #t = target_tensor[di,:]
-            #t = torch.argmax(t, dim=None)
-            #print(t.item())
-            #t = torch.Tensor([t])
-            #print(decoder_output)
-            #print(decoder_output.shape)
 
             loss += criterion(decoder_output, target_tensor[di,:].view(1,-1))
-            #print(decoder_output)
-            #print(target_tensor[di,:].view(1,-1))
-            #quit()
 
             decoder_input = target_tensor[di,:]  # todo: is offset correct?
-            #print(torch.argmax(decoder_input))
 
     else:
         raise NotImplementedError
@@ -84,7 +70,6 @@ def train(encoder, decoder, epochs, learning_rate=0.01):
 
     #encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
     #decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
-
     encoder_optimizer = optim.Adam(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.Adam(decoder.parameters(), lr=learning_rate)
 
@@ -92,8 +77,6 @@ def train(encoder, decoder, epochs, learning_rate=0.01):
 
     encoderInput, decoderInput, decoderTarget = generateInput(notes, delta=1)
 
-    #criterion = nn.BCELoss()
-    #criterion = nn.CrossEntropyLoss() #todo !
     criterion = nn.BCEWithLogitsLoss()
     #criterion = nn.MultiLabelSoftMarginLoss()
 
