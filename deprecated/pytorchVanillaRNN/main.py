@@ -1,16 +1,10 @@
 from __future__ import unicode_literals, print_function, division
-import random
-import numpy as np
 import torch
 import torch.nn as nn
-from music21 import note
 from torch import optim
-import torch.nn.functional as F
-import time
-import math
 from dataset import entchen
-from pytorchVanillaRNN.VanillaLSTM import VanillaLSTM
-from tools.encodeNotes import getTotalTokens, getStartIndex, getStopIndex, generateInput
+from deprecated.pytorchVanillaRNN.VanillaLSTM import VanillaLSTM
+from tools.encodeNotes import getTotalTokens, getStopIndex, generateInput
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 ##########################
