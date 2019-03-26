@@ -1,5 +1,6 @@
 from __future__ import unicode_literals, print_function, division
 
+import os
 import random
 
 import numpy as np
@@ -75,7 +76,7 @@ def train(encoder, decoder, epochs, learning_rate=0.01):
 
     piece, notes = entchen.get()
 
-    encoderInput, decoderInput, decoderTarget = generateInput(notes, delta=1, useTied=False)
+    encoderInput, decoderInput, decoderTarget = generateInput(notes, delta=1, useTied=True, split=0.5)
 
     #criterion = nn.BCEWithLogitsLoss()
     #criterion = nn.MultiLabelSoftMarginLoss()
@@ -95,11 +96,14 @@ def train(encoder, decoder, epochs, learning_rate=0.01):
 
 
 ##########################
-hidden_size = 150
+hidden_size = 132
+#encoder1 = EncoderRNN(getTotalTokens(), hidden_size).to(device)
+#decoder1 = DecoderRNN(hidden_size, getTotalTokens()).to(device)
+
 encoder1 = EncoderRNN(getTotalTokens(), hidden_size).to(device)
 decoder1 = DecoderRNN(hidden_size, getTotalTokens()).to(device)
 
-train(encoder1, decoder1, epochs=100)
+train(encoder1, decoder1, epochs=200, learning_rate=0.01)
 
 torch.save(encoder1, "encoder.pt")
 torch.save(decoder1, "decoder.pt")

@@ -107,15 +107,25 @@ def quantization(notes, delta):
             print("quantization used")
 
 
-def decodeSequence(seq, input=None):
+def decodeSequence(seq, input=None, tieThreshold=0.5, delta=1):
     # todo: delta & länge beachten
     # todo: use tied
     notes = []
     for i in range(0, len(seq)):
-        if seq[i] < 129:
+        if seq[i][0] < 129:
             n = music21.note.Note()
-            n.pitch.midi = seq[i]
-            notes.append(n)
+            n.pitch.midi = seq[i][0]
+
+            if seq[i][1] >= tieThreshold and len(notes) > 0 and notes[-1].pitch.midi == seq[i][0]:
+                # Tied to the same previous note
+                notes[-1].quarterLength += delta
+            elif seq[i][1] >= tieThreshold and len(notes) > 0:
+                # Add Tie between two different notes
+                # todo: http://web.mit.edu/music21/doc/usersGuide/usersGuide_31_clefs.html
+                #print("Not implemented - decodeSequence")
+                pass
+            else:
+                notes.append(n)
 
     if input is not None:
         notes = input + notes

@@ -12,6 +12,8 @@ class DecoderRNN(nn.Module):
         self.hidden_size = hidden_size
 
         self.gru = nn.GRU(getTotalTokens(), hidden_size)
+        self.gru2 = nn.GRU(hidden_size, hidden_size)
+
         self.out = nn.Linear(hidden_size, output_size)
         self.m = nn.Sigmoid()
 
@@ -20,6 +22,8 @@ class DecoderRNN(nn.Module):
         output = input.view(1, 1, -1)
 
         output, hidden = self.gru(output, hidden)
+        output, hidden = self.gru2(output, hidden)
+
         output = self.out(output[0])
         output = self.m(output)
 
