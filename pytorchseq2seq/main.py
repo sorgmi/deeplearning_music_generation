@@ -75,10 +75,11 @@ def train(encoder, decoder, epochs, learning_rate=0.01):
 
     piece, notes = entchen.get()
 
-    encoderInput, decoderInput, decoderTarget = generateInput(notes, delta=1)
+    encoderInput, decoderInput, decoderTarget = generateInput(notes, delta=1, useTied=False)
 
-    criterion = nn.BCEWithLogitsLoss()
+    #criterion = nn.BCEWithLogitsLoss()
     #criterion = nn.MultiLabelSoftMarginLoss()
+    criterion = nn.BCELoss()
 
     input_tensor = torch.Tensor(encoderInput)
     target_tensor = torch.Tensor(decoderTarget)

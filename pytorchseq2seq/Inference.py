@@ -7,7 +7,7 @@ from tools.encodeNotes import generateInput, getTotalTokens, getStartIndex, getS
 MAX_LENGTH = 35
 
 piece, notes = entchen.get()
-encoderInput, decoderInput, decoderTarget = generateInput(notes, delta=1)
+encoderInput, decoderInput, decoderTarget = generateInput(notes, delta=1, useTied=False)
 
 input = torch.Tensor(encoderInput)
 
@@ -47,7 +47,7 @@ x = notes[:int(len(notes)*0.5)]
 y = notes[int(len(notes)*0.5):]
 from tools.encodeNotes import *
 p = decodeSequence(decoded_sentence, x + [music21.note.Rest(type='half')])
-p.show()
+#p.show()
 
 x = [x.pitch.midi for x in x]
 y = [y.pitch.midi for y in y]

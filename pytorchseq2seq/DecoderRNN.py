@@ -12,23 +12,17 @@ class DecoderRNN(nn.Module):
         self.hidden_size = hidden_size
 
         self.gru = nn.GRU(getTotalTokens(), hidden_size)
-        #self.gru2 = nn.GRU(hidden_size, hidden_size)
         self.out = nn.Linear(hidden_size, output_size)
-        #self.softmax = nn.LogSoftmax(dim=1)
-        #self.softmax = nn.Softmax()
-        #self.m = nn.Sigmoid()
+        self.m = nn.Sigmoid()
 
 
     def forward(self, input, hidden):
         output = input.view(1, 1, -1)
 
-        #output = F.relu(output)
         output, hidden = self.gru(output, hidden)
-        #output, hidden = self.gru2(output, hidden)
-
-        #output = self.softmax(self.out(output[0]))
         output = self.out(output[0])
-        #output = self.m(output)
+        output = self.m(output)
+
         return output, hidden
 
     def initHidden(self):
