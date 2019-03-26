@@ -23,7 +23,7 @@ def getNoteList(part, transpose=True):
     return notes
 
 def noteListToInt(notes):
-    return [x.pitch.midi for x in notes]
+    return [getNoteIndex(x) for x in notes]
 
 
 def generateInput(notes, split=0.5, delta=0.25, useEOF=False, useTied=False):
