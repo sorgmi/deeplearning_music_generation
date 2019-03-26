@@ -82,26 +82,13 @@ def trainSingleExample(input_tensor, target_tensor, encoder, decoder, encoder_op
 
 def train(encoder, decoder, epochs, learning_rate=0.01):
 
-    encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
-    decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
+    #encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
+    #decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
 
     encoder_optimizer = optim.Adam(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.Adam(decoder.parameters(), lr=learning_rate)
 
     piece, notes = entchen.get()
-
-    n1 = note.Note()
-    n1.pitch.midi=1
-    n2 = note.Note()
-    n2.pitch.midi = 2
-    n3 = note.Note()
-    n3.pitch.midi = 3
-    n4 = note.Note()
-    n4.pitch.midi = 4
-    n5 = note.Note()
-    n5.pitch.midi = 5
-    #notes = [n1,n2,n3,n4]
-
 
     encoderInput, decoderInput, decoderTarget = generateInput(notes, delta=1)
 
