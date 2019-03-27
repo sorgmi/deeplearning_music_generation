@@ -4,7 +4,7 @@ I love music and deep learning. Let's combine both.
 ---
 **List of experiments**
 1. [Overfitting example with Keras](01_Overfitting_Simple_Song.ipynb): Overfit a single and simple piece of music with a basic encoder-decoder LSTM
-2. [Overfitting example with PyTorch and Embeddings](02_Overfitting_PyTorch_Embeddings.ipynb): Overfit a single and simple piece of music with a basic encoder-decoder LSTM. Supports different note lengths
+2. [Overfitting example with PyTorch and Embeddings](https://nbviewer.jupyter.org/github/sorgmi/deeplearning_music_generation/blob/master/02_Overfitting_PyTorch_Embeddings.ipynb)(or use [this link](02_Overfitting_PyTorch_Embeddings.ipynb)): Overfit a single and simple piece of music with a basic encoder-decoder LSTM. Supports different note lengths
 
 
 
