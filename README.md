@@ -4,7 +4,7 @@ I love music and deep learning. Let's combine both.
 ---
 **List of experiments**
 1. [Overfitting example with Keras](01_Overfitting_Simple_Song.ipynb): Overfit a single and simple piece of music with a basic encoder-decoder LSTM
-2. [Overfitting example with PyTorch and Embeddings](https://nbviewer.jupyter.org/github/sorgmi/deeplearning_music_generation/blob/master/02_Overfitting_PyTorch_Embeddings.ipynb)(or use [this link](02_Overfitting_PyTorch_Embeddings.ipynb)): Overfit a single and simple piece of music with a basic encoder-decoder LSTM. Supports different note lengths
+2. [Overfitting example with PyTorch and Embeddings](https://nbviewer.jupyter.org/github/sorgmi/deeplearning_music_generation/blob/master/02_Overfitting_PyTorch_Embeddings.ipynb) (or use [this link](02_Overfitting_PyTorch_Embeddings.ipynb)): Overfit a single and simple piece of music with a basic encoder-decoder LSTM. Supports different note lengths
 
 
 
@@ -21,11 +21,11 @@ I love music and deep learning. Let's combine both.
 Encoding is inspired by [Bachbot](https://github.com/feynmanliang/bachbot). Image is from [here](https://www.microsoft.com/en-us/research/wp-content/uploads/2017/11/156_Paper.pdf): 
 ![Encoding from Bachbot](images/bachbot_encoding.PNG)
 
-All 128 MIDI-Notes are supported. Additionally we use 3 unique symbols: start, stop, ~~EOF (end of frame)~~, Tied. Therefore notes are encoded in a 131-dimensional vector.
-
-* Alle notes should be quantised to a minimum pre-defined length (shortest supported note)
-* network gets an 3 dimensional vector as input. The shape is (batchsize, timesteps, 132). The 132 elements of the vector are binary (0 or 1). Since a chord contains multiple notes in one timestep it's not a one-hot encoding
-* The network can handly arbitrarily long input sequences (number of timesteps can vary)
+Encoding and decoding is done by [encoding.py](pytorchmodels/encoding.py).
+Current encoding: **258 different symbols are used as input**
+- 128 midi notes: Represent standard notes
+- additional 128 midi notes: Represents the same note as the 128 first notes (same pitch), but this time the note is tied to the previous note. This the network can output notes with different lengths (multipple times the same note tied to the previous note).
+- 2 additional symbols: START, STOP
 
 
 
