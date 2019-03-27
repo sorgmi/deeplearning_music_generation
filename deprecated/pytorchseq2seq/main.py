@@ -1,22 +1,14 @@
 from __future__ import unicode_literals, print_function, division
 
-import os
-import random
-
 import numpy as np
 import torch
 import torch.nn as nn
-from music21 import note
 from torch import optim
-import torch.nn.functional as F
-import time
-import math
 
 from dataset import entchen
-from pytorchseq2seq.AttnDecoderRNN import AttnDecoderRNN
-from pytorchseq2seq.DecoderRNN import DecoderRNN
-from pytorchseq2seq.EncoderRNN import EncoderRNN
-from tools.encodeNotes import getTotalTokens, getStartIndex, getStopIndex, generateInput
+from deprecated.pytorchseq2seq import DecoderRNN
+from deprecated.pytorchseq2seq import EncoderRNN
+from tools.encodeNotes import getTotalTokens, getStartIndex, generateInput
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

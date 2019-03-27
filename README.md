@@ -7,9 +7,10 @@ I love music and deep learning. Let's combine both.
 
 
 **Todo**
+- [x] Support variable note length (ties wihtin the same note)
 - [ ] Support Ties
 - [ ] Support chords
-- [ ] Use attention
+- [ ] Use and analyse attention
 - [x] ~~Perform quantization~~
 - [ ] Look for more advanced network architectures (RNN's, GAN's...)
 
