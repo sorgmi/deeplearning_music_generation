@@ -53,6 +53,9 @@ def decodeSequence(seq, input=None, delta=1):
             elif index < 128 * 2 and index - 128 == previousNote:
                 notes[-1].quarterLength += delta
             else:
+                print(seq)
+                print(notes)
+                print(index)
                 raise NotImplementedError
 
 

@@ -1,4 +1,6 @@
+import math
 import random
+import time
 
 import music21
 import torch
@@ -49,7 +51,7 @@ def train(input, target, encoder, decoder, encoder_optimizer, decoder_optimizer,
             decoder_input = target[di]  # Teacher forcing
 
     else:
-        raise NotImplementedError
+        #raise NotImplementedError
         # Without teacher forcing: use its own predictions as the next input
         for di in range(target_length):
             decoder_output, decoder_hidden, decoder_attention = decoder(
@@ -68,16 +70,6 @@ def train(input, target, encoder, decoder, encoder_optimizer, decoder_optimizer,
 
     return loss.item() / target_length
 
-
-######################################################################
-# This is a helper function to print time elapsed and estimated time
-# remaining given the current time and progress %.
-#
-
-import time
-import math
-
-
 def asMinutes(s):
     m = math.floor(s / 60)
     s -= m * 60
@@ -94,12 +86,24 @@ def timeSince(since, percent):
     rs = es - s
     return '%s (- %s)' % (asMinutes(s), asMinutes(rs))
 
+import matplotlib.pyplot as plt
+#plt.switch_backend('agg')
+import matplotlib.ticker as ticker
+
+def showPlot(points):
+    plt.figure()
+    fig, ax = plt.subplots()
+    loc = ticker.MultipleLocator(base=0.2)
+    ax.yaxis.set_major_locator(loc)
+    plt.plot(points)
+    plt.show()
+
 
 def trainIters(pairs, encoder, decoder, epochs, print_every=1000, plot_every=100, learning_rate=0.01):
     start = time.time()
     plot_losses = []
-    print_loss_total = 0  # Reset every print_every
-    plot_loss_total = 0  # Reset every plot_every
+    print_loss_total = 0
+    plot_loss_total = 0
 
     encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
@@ -126,37 +130,29 @@ def trainIters(pairs, encoder, decoder, epochs, print_every=1000, plot_every=100
                 plot_loss_avg = plot_loss_total / plot_every
                 plot_losses.append(plot_loss_avg)
                 plot_loss_total = 0
-        print("Epoch", iter+1, " finished. Loss: ", loss)
+        print("Epoch", iter+1, " finished. Loss:", loss)
+
+    #showPlot(plot_losses)
 
 
 
 
 ###########################################################################################################
-
-
 piece, notes = entchen.get()
 input = encodeNoteList(notes, delta=1)
-#print([x.pitch.midi for x in notes])
-#print(input)
 input, target = split(input, splitRatio=0.49)
-#print(input, target)
-#quit()
-
 pairs = [(input,target)]
-
-
 
 hidden_size = 64
 encoder = EncoderRNN(getTotalTokens(), hidden_size).to(device)
 #attn_decoder1 = AttnDecoderRNN(hidden_size, output_lang.n_words, dropout_p=0.1,flag=flag).to(device)
 decoder = DecoderRNN(hidden_size, getTotalTokens()).to(device)
 
-
-trainIters(pairs, encoder, decoder, epochs=100, print_every=1000000)
+trainIters(pairs, encoder, decoder, epochs=100, print_every=1000000, plot_every=2)
 
 
 ### INFERENCE ###
-
+#quit()
 with torch.no_grad():
     input_tensor = torch.tensor(input)
     input_length = input_tensor.size()[0]
