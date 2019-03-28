@@ -5,6 +5,7 @@ I love music and deep learning. Let's combine both.
 **List of experiments**
 1. [Overfitting example with Keras](01_Overfitting_Simple_Song.ipynb): Overfit a single and simple piece of music with a basic encoder-decoder LSTM
 2. [Overfitting example with PyTorch and Embeddings](https://nbviewer.jupyter.org/github/sorgmi/deeplearning_music_generation/blob/master/02_Overfitting_PyTorch_Embeddings.ipynb) (or use [this link](02_Overfitting_PyTorch_Embeddings.ipynb)): Overfit a single and simple piece of music with a basic encoder-decoder LSTM. Supports different note lengths
+3. [Overfitting example with Attention](https://nbviewer.jupyter.org/github/sorgmi/deeplearning_music_generation/blob/master/03_Overfitting_PyTorch_Attention.ipynb): Overfit a single and simple piece of music with a basic encoder-decoder LSTM. This time the decoder uses the attention mechanism. Attetion focus is visualised
 
 
 
@@ -12,7 +13,7 @@ I love music and deep learning. Let's combine both.
 - [x] Support variable note length (ties wihtin the same note)
 - [ ] Support Ties
 - [ ] Support chords
-- [ ] Use and analyse attention (show and plot attetion focus)
+- [x] Use and analyse attention (show and plot attetion focus)
 - [x] ~~Perform quantization~~
 - [ ] Look for more advanced network architectures (RNN's, GAN's...)
 
