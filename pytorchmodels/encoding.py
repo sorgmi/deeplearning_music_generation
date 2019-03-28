@@ -60,7 +60,6 @@ def decodeSequence(seq, input=None, delta=1):
 
 
     if input is not None:
-        print("reiin", input)
         notes = input + [music21.note.Rest(type='half')] + notes
 
     piece = music21.stream.Score()

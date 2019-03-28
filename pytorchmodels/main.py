@@ -154,37 +154,42 @@ trainIters(pairs, encoder, decoder, epochs=100, print_every=2, plot_every=2)
 
 ### INFERENCE ###
 #quit()
-with torch.no_grad():
-    input_tensor = torch.tensor(input)
-    input_length = input_tensor.size()[0]
-    encoder_hidden = encoder.initHidden()
 
-    max_length = MAX_LENGTH
+def evaluate(input, max_length=MAX_LENGTH):
+    #print(input)
+    with torch.no_grad():
+        input_tensor = torch.tensor(input)
+        input_length = input_tensor.size()[0]
+        encoder_hidden = encoder.initHidden()
 
-    encoder_outputs = torch.zeros(max_length, encoder.hidden_size, device=device)
+        encoder_outputs = torch.zeros(max_length, encoder.hidden_size, device=device)
 
-    for ei in range(input_length):
-        encoder_output, encoder_hidden = encoder(input_tensor[ei], encoder_hidden)
-        encoder_outputs[ei] += encoder_output[0, 0]
+        for ei in range(input_length):
+            encoder_output, encoder_hidden = encoder(input_tensor[ei], encoder_hidden)
+            encoder_outputs[ei] += encoder_output[0, 0]
 
-    decoder_input = torch.tensor([[getStartIndex()]], device=device)  # SOS
+        decoder_input = torch.tensor([[getStartIndex()]], device=device)  # SOS
 
-    decoder_hidden = encoder_hidden
+        decoder_hidden = encoder_hidden
 
-    decoded_words = []
-    decoder_attentions = torch.zeros(max_length, max_length)
+        decoded_words = []
+        decoder_attentions = torch.zeros(max_length, max_length)
 
-    for di in range(max_length):
-        decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
-        #decoder_attentions[di] = decoder_attention.data
-        topv, topi = decoder_output.data.topk(1)
-        if topi.item() == getStopIndex():
-            decoded_words.append(getStopIndex())
-            break
-        else:
-            decoded_words.append(topi.item())
+        for di in range(max_length):
+            decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
+            decoder_attentions[di] = decoder_attention.data
+            topv, topi = decoder_output.data.topk(1)
+            if topi.item() == getStopIndex():
+                decoded_words.append(getStopIndex())
+                break
+            else:
+                decoded_words.append(topi.item())
 
-        decoder_input = topi.squeeze().detach()
+            decoder_input = topi.squeeze().detach()
+
+        return decoded_words, decoder_attentions[:di + 1]
+
+decoded_words, decoder_attentions = evaluate(input)
 
 print("d:",decoded_words)
 
@@ -195,3 +200,32 @@ p.show()
 
 print("i:",input)
 print("t:",target)
+
+
+### Show Attention ###
+def showAttention(input_sentence, output_words, attentions):
+    # Set up figure with colorbar
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    cax = ax.matshow(attentions.numpy(), cmap='bone')
+    fig.colorbar(cax)
+
+    # Set up axes
+    ax.set_xticklabels([''] + input_sentence + ['<EOS>'], rotation=90)
+    ax.set_yticklabels([''] + output_words)
+
+    # Show label at every tick
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+
+    plt.show()
+
+def evaluateAndShowAttention(input_sentence):
+    output_words, attentions = evaluate(input_sentence)
+    print('input =', input_sentence)
+    print('output =', output_words)
+    showAttention(input_sentence, output_words, attentions)
+
+print("\nshow attention:")
+#plt.matshow(decoder_attentions.numpy())
+evaluateAndShowAttention([60, 62, 64, 65, 67, 195, 67, 195, 69, 69, 69, 69, 67, 195, 69, 69])
