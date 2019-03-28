@@ -12,7 +12,7 @@ I love music and deep learning. Let's combine both.
 - [x] Support variable note length (ties wihtin the same note)
 - [ ] Support Ties
 - [ ] Support chords
-- [ ] Use and analyse attention
+- [ ] Use and analyse attention (show and plot attetion focus)
 - [x] ~~Perform quantization~~
 - [ ] Look for more advanced network architectures (RNN's, GAN's...)
 
@@ -22,6 +22,7 @@ Encoding is inspired by [Bachbot](https://github.com/feynmanliang/bachbot). Imag
 ![Encoding from Bachbot](images/bachbot_encoding.PNG)
 
 Encoding and decoding is done by [encoding.py](pytorchmodels/encoding.py).
+
 Current encoding: **258 different symbols are used as input**
 - 128 midi notes: Represent standard notes
 - additional 128 midi notes: Represents the same note as the 128 first notes (same pitch), but this time the note is tied to the previous note. This the network can output notes with different lengths (multipple times the same note tied to the previous note).
