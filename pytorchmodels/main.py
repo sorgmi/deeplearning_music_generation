@@ -7,6 +7,7 @@ import torch
 from torch import optim, nn
 
 from dataset import entchen
+from pytorchmodels.AttnDecoderRNN import AttnDecoderRNN
 from pytorchmodels.DecoderRNN import DecoderRNN
 from pytorchmodels.EncoderRNN import EncoderRNN
 from pytorchmodels.encoding import getStartIndex, getStopIndex, getTotalTokens, encodeNoteList, split, decodeSequence
@@ -14,8 +15,7 @@ from pytorchmodels.encoding import getStartIndex, getStopIndex, getTotalTokens, 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 teacher_forcing_ratio = 1.0
-MAX_LENGTH = 10
-
+MAX_LENGTH = 30
 
 def train(input, target, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion, max_length=MAX_LENGTH):
     encoder_hidden = encoder.initHidden()
@@ -29,7 +29,7 @@ def train(input, target, encoder, decoder, encoder_optimizer, decoder_optimizer,
     input = torch.tensor(input)
     target = torch.tensor(target).view(-1, 1)
 
-    encoder_outputs = torch.zeros(target_length+max_length, encoder.hidden_size, device=device)
+    encoder_outputs = torch.zeros(max_length, encoder.hidden_size, device=device)
 
     loss = 0
 
@@ -110,8 +110,9 @@ def trainIters(pairs, encoder, decoder, epochs, print_every=1000, plot_every=100
 
     criterion = nn.NLLLoss()
 
+    numberofExamples = len(pairs)
     for iter in range(0, epochs):
-        for example in range(0, len(pairs)):
+        for example in range(0, numberofExamples):
             training_pair = pairs[example]
             input = training_pair[0]
             target = training_pair[1]
@@ -123,8 +124,8 @@ def trainIters(pairs, encoder, decoder, epochs, print_every=1000, plot_every=100
             if example % print_every == 0:
                 print_loss_avg = print_loss_total / print_every
                 print_loss_total = 0
-                print('%s (%d %d%%) %.4f' % (timeSince(start, example / epochs),
-                                             example, example / epochs * 100, print_loss_avg))
+                print('%s (%d %d%%) %.4f' % (timeSince(start, example / numberofExamples),
+                                             example, example / numberofExamples * 100, print_loss_avg))
 
             if example % plot_every == 0:
                 plot_loss_avg = plot_loss_total / plot_every
@@ -145,10 +146,10 @@ pairs = [(input,target)]
 
 hidden_size = 64
 encoder = EncoderRNN(getTotalTokens(), hidden_size).to(device)
-#attn_decoder1 = AttnDecoderRNN(hidden_size, output_lang.n_words, dropout_p=0.1,flag=flag).to(device)
-decoder = DecoderRNN(hidden_size, getTotalTokens()).to(device)
+decoder = AttnDecoderRNN(hidden_size, getTotalTokens(), max_length=MAX_LENGTH, dropout_p=0.1).to(device)
+#decoder = DecoderRNN(hidden_size, getTotalTokens()).to(device)
 
-trainIters(pairs, encoder, decoder, epochs=100, print_every=1000000, plot_every=2)
+trainIters(pairs, encoder, decoder, epochs=100, print_every=2, plot_every=2)
 
 
 ### INFERENCE ###
@@ -158,13 +159,12 @@ with torch.no_grad():
     input_length = input_tensor.size()[0]
     encoder_hidden = encoder.initHidden()
 
-    max_length = 25
+    max_length = MAX_LENGTH
 
     encoder_outputs = torch.zeros(max_length, encoder.hidden_size, device=device)
 
     for ei in range(input_length):
-        encoder_output, encoder_hidden = encoder(input_tensor[ei],
-                                                 encoder_hidden)
+        encoder_output, encoder_hidden = encoder(input_tensor[ei], encoder_hidden)
         encoder_outputs[ei] += encoder_output[0, 0]
 
     decoder_input = torch.tensor([[getStartIndex()]], device=device)  # SOS
