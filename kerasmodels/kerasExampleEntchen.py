@@ -1,8 +1,5 @@
-import numpy as np
-
-import tools
 from dataset import entchen
-from tools.encodeNotes import getNoteList, noteListToInt, generateInput, getStartIndex, getStopIndex
+from deprecated.encodeNotes import generateInput
 from keras.models import Model
 from keras.layers import Input, LSTM, Dense
 
@@ -88,12 +85,12 @@ def decode_sequence(input_seq):
 
 
         # Tie?
-        if output_tokens[0,-1, tools.encodeNotes.getTiedIndex()] > 0.5:
+        if output_tokens[0, -1, deprecated.encodeNotes.getTiedIndex()] > 0.5:
          tied_sequence.append(True)
         else:
             tied_sequence.append(False)
-        print(output_tokens[0,-1, tools.encodeNotes.getTiedIndex()]) #todo: remooove
-        output_tokens[0,-1, tools.encodeNotes.getTiedIndex()] = 0
+        print(output_tokens[0, -1, deprecated.encodeNotes.getTiedIndex()]) #todo: remooove
+        output_tokens[0, -1, deprecated.encodeNotes.getTiedIndex()] = 0
 
         # Sample a token
         sampled_token_index = np.argmax(output_tokens[0, -1, :])
@@ -125,7 +122,7 @@ print('Decoded sentence:', decoded_sentence)
 
 x = notes[:int(len(notes)*0.5)]
 y = notes[int(len(notes)*0.5):]
-from tools.encodeNotes import *
+from deprecated.encodeNotes import *
 p = decodeSequence(decoded_sentence, x + [music21.note.Rest(type='half')])
 #p.show()
 

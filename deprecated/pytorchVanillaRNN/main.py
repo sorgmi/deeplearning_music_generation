@@ -4,7 +4,7 @@ import torch.nn as nn
 from torch import optim
 from dataset import entchen
 from deprecated.pytorchVanillaRNN.VanillaLSTM import VanillaLSTM
-from tools.encodeNotes import getTotalTokens, getStopIndex, generateInput
+from deprecated.encodeNotes import getTotalTokens, getStopIndex, generateInput
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 ##########################
@@ -80,7 +80,7 @@ print(decoded_sentence, len(decoded_sentence))
 
 x = notes[:int(len(notes)*0.5)]
 y = notes[int(len(notes)*0.5):]
-from tools.encodeNotes import *
+from deprecated.encodeNotes import *
 p = decodeSequence(decoded_sentence, x + [music21.note.Rest(type='half')])
 p.show()
 x = [x.pitch.midi for x in x]

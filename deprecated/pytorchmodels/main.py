@@ -8,7 +8,7 @@ from torch import optim
 from dataset import entchen
 from deprecated.pytorchmodels import DecoderRNN
 from deprecated.pytorchmodels.EncoderRNN import EncoderRNN
-from tools.encodeNotes import getTotalTokens, getStartIndex, generateInput
+from deprecated.encodeNotes import getTotalTokens, getStartIndex, generateInput
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

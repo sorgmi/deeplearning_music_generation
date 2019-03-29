@@ -2,7 +2,7 @@ import numpy as np
 import torch
 
 from dataset import entchen
-from tools.encodeNotes import generateInput, getTotalTokens, getStartIndex, getStopIndex, getTiedIndex
+from deprecated.encodeNotes import generateInput, getTotalTokens, getStartIndex, getStopIndex, getTiedIndex
 
 MAX_LENGTH = 35
 
@@ -50,7 +50,7 @@ print(decoded_sentence, len(decoded_sentence))
 
 x = notes[:int(len(notes)*0.5)]
 y = notes[int(len(notes)*0.5):]
-from tools.encodeNotes import *
+from deprecated.encodeNotes import *
 p = decodeSequence(decoded_sentence, x + [music21.note.Rest(type='half')], delta=1)
 p.show()
 
