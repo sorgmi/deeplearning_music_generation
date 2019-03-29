@@ -2,3 +2,5 @@
 .idea/
 *.pt
 *.pyc
+
+tmp.py

@@ -1,9 +1,16 @@
 import music21
-from music21 import interval, pitch
 
 majors = dict([("A-", 4),("A", 3),("B-", 2),("B", 1),("C", 0),("D-", -1),("D", -2),("E-", -3),("E", -4),("F", -5),("G-", 6),("G", 5)])
 minors = dict([("F#", 3), ("A-", 1),("A", 0),("B-", -1),("B", -2),("C", -3),("D-", -4),("D", -5),("E-", 6),("E", 5),("F", 4),("G-", 3),("G", 2)])
 
+def transposePart(part, inPlace=True):
+    # part = part.transpose(interval.Interval(part.analyze('key').tonic, pitch.Pitch('C')))
+    key = part.analyze('key')
+    if key.mode == "major":
+        halfSteps = majors[key.tonic.name]
+    elif key.mode == "minor":
+        halfSteps = minors[key.tonic.name]
+    part.transpose(halfSteps, inPlace=inPlace)
 
 def getNoteList(part, transpose=True):
     notes = []
@@ -73,11 +80,13 @@ def decodeSequence(seq, input=None, delta=1):
         if i == 0 and index <= 128:
             n = music21.note.Note()
             n.pitch.midi = index
+            n.quarterLength = delta
             notes.append(n)
         elif i == 0:
             print("Not implemented Tie start. Index:", index)
             n = music21.note.Note()
             n.pitch.midi = index-128
+            n.quarterLength = delta
             notes.append(n)
             #raise NotImplementedError
 
@@ -87,6 +96,7 @@ def decodeSequence(seq, input=None, delta=1):
             if index <= 128:
                 n = music21.note.Note()
                 n.pitch.midi = index
+                n.quarterLength = delta
                 notes.append(n)
             elif index < 128 * 2 and index - 128 == previousNote:
                 notes[-1].quarterLength += delta
