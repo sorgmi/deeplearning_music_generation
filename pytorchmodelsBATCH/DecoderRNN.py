@@ -2,12 +2,13 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class DecoderRNN(nn.Module):
-    def __init__(self, hidden_size, output_size):
+    def __init__(self, hidden_size, output_size, device):
         super(DecoderRNN, self).__init__()
         self.hidden_size = hidden_size
+        self.sevice = device
 
         self.embedding = nn.Embedding(output_size, hidden_size)
         self.gru = nn.GRU(hidden_size, hidden_size)
@@ -22,4 +23,4 @@ class DecoderRNN(nn.Module):
         return output, hidden, quatsch
 
     def initHidden(self):
-        return torch.zeros(1, 1, self.hidden_size, device=device)
+        return torch.zeros(1, 1, self.hidden_size, device=self.device)

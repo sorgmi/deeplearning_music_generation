@@ -7,10 +7,10 @@ from torch import optim, nn
 
 from pytorchmodels.encoding import getStartIndex, getStopIndex, getTotalTokens, encodeNoteList, split, decodeSequence
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 teacher_forcing_ratio = 1.0
 
-def train(input, target, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion, max_length):
+def train(input, target, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion, max_length, device):
 
     input_length = input.shape[1]
     target_length = target.shape[1]
@@ -30,7 +30,7 @@ def train(input, target, encoder, decoder, encoder_optimizer, decoder_optimizer,
         #print(input.shape, "enc out:", encoder_output.shape)
         #encoder_outputs = encoder_output[0, 0]
 
-    decoder_input = torch.tensor( [getStartIndex()] *batch_size, device=device)
+    decoder_input = torch.tensor( [getStartIndex()] *batch_size, device=device).to(device)
     #print(decoder_input, decoder_input.shape)
     #quit()
     #decoder_input = torch.zeros(input_length, 1)
@@ -56,7 +56,7 @@ def train(input, target, encoder, decoder, encoder_optimizer, decoder_optimizer,
     return loss.item() / target_length
 
 
-def trainIters(batches, encoder, decoder, epochs, max_length, print_every=1000, plot_every=100, learning_rate=0.01):
+def trainIters(batches, encoder, decoder, epochs, max_length, device,print_every=1000, plot_every=100, learning_rate=0.01):
     start = time.time()
     plot_losses = []
     print_loss_total = 0
@@ -74,7 +74,7 @@ def trainIters(batches, encoder, decoder, epochs, max_length, print_every=1000, 
             input = training_pair[0]
             target = training_pair[1]
 
-            loss = train(input, target, encoder,decoder, encoder_optimizer, decoder_optimizer,criterion, max_length=max_length)
+            loss = train(input, target, encoder,decoder, encoder_optimizer, decoder_optimizer,criterion, device=device, max_length=max_length)
             print_loss_total += loss
             plot_loss_total += loss
 

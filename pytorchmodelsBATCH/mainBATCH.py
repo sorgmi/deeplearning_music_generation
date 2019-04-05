@@ -86,8 +86,9 @@ def padBatch(pairs):
 ### Data preparation ###
 delta = 0.5
 splitFactor = 0.5
-#notes = parseMXLfiles('C:/Users/sorgm/datasets/music21corpus/bach/bwv3.6.mxl')
-notes = parseMXLfiles('C:/Users/sorgm/datasets/music21corpus/bach/bwv1*.mxl')
+#notes = parseMXLfiles('C:/Users/sorgm/datasets/music21corpus/bach/bwv1*.mxl')
+notes = parseMXLfiles('C:/Users/Shadow/music21/music21/corpus/bach/bwv3.6.mxl')
+#notes = parseMXLfiles('C:/Users/Shadow/music21/music21/corpus/bach/bwv1*.mxl')
 #print(len(notes))
 #quit()
 
@@ -107,17 +108,18 @@ print("batch shapes:", input.shape, target.shape)
 
 ### Training ###
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cpu")
 hidden_size = 128
-encoder = EncoderRNN(getTotalTokens(), hidden_size).to(device)
+encoder = EncoderRNN(getTotalTokens(), hidden_size, device).to(device)
 #decoder = AttnDecoderRNN(hidden_size, getTotalTokens(), max_length=MAX_LENGTH, dropout_p=0.1).to(device)
-decoder = DecoderRNN(hidden_size, getTotalTokens()).to(device)
+decoder = DecoderRNN(hidden_size, getTotalTokens(), device).to(device)
 
 
-batches = [(input, target)]
+batches = [(input.to(device), target.to(device))]
 
 s = time.time()
-trainIters(batches, encoder, decoder, epochs=10, print_every=2, plot_every=2, max_length=MAX_LENGTH)
-print(time.time()-s, len(train))
+trainIters(batches, encoder, decoder, epochs=1, print_every=2, plot_every=2, device=device,max_length=MAX_LENGTH)
+print(time.time()-s)
 
 
 quit()

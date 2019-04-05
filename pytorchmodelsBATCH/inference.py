@@ -6,26 +6,26 @@ import matplotlib.ticker as ticker
 from pytorchmodels.encoding import getStartIndex, getStopIndex
 
 
-def evaluate(input, encoder, decoder, max_length):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def evaluate(input, encoder, decoder, max_length, device):
+    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #print(input)
     with torch.no_grad():
-        input_tensor = torch.tensor(input)
+        input_tensor = torch.tensor(input).to(device)
         input_length = input_tensor.size()[0]
         encoder_hidden = encoder.initHidden(1)
 
-        encoder_outputs = torch.zeros(max_length, encoder.hidden_size, device=device)
+        encoder_outputs = torch.zeros(max_length, encoder.hidden_size, device=device).to(device)
 
         for ei in range(input_length):
             encoder_output, encoder_hidden = encoder(input_tensor[ei], encoder_hidden)
             encoder_outputs[ei] += encoder_output[0, 0]
 
-        decoder_input = torch.tensor([[getStartIndex()]], device=device)  # SOS
+        decoder_input = torch.tensor([[getStartIndex()]], device=device).to(device)  # SOS
 
         decoder_hidden = encoder_hidden
 
         decoded_words = []
-        decoder_attentions = torch.zeros(max_length, max_length)
+        decoder_attentions = torch.zeros(max_length, max_length).to(device)
 
         for di in range(max_length):
             decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
